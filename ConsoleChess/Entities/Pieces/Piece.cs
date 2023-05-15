@@ -13,5 +13,7 @@ namespace ConsoleChess.Entities.Pieces
             currentPosition.Piece = this;
             Color = color;
         }
+
+        public abstract List<Move> GetMoves(Board board);
     }
 }

@@ -4,13 +4,24 @@ namespace ConsoleChess.Entities
 {
     public class Move
     {
-        private Piece StartPiece {get;}
-        private Piece? FinalPiece {get;}
+        public Position StartPosition {get;}
+        public Position FinalPosition {get;}
 
-        public Move(Piece startPiece, Piece? finalPiece)
+        public Move(Position startPosition, Position finalPosition)
         {
-            StartPiece = startPiece;
-            FinalPiece = finalPiece;
+            StartPosition = startPosition;
+            FinalPosition = finalPosition;
+        }
+
+        public void Execute()
+        {
+            FinalPosition.Piece = StartPosition.Piece;
+            StartPosition.Piece = null;
+        }
+
+        public override string ToString()
+        {
+            return $"{StartPosition} -> {FinalPosition}";
         }
     }
 }

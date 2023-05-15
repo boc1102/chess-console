@@ -16,13 +16,19 @@ namespace ConsoleChess.Game
                 Console.Write($"{8 - i} ");
                 for(int j = 0; j < 8; j++)
                 {
-                    Piece? piece = board.Positions[i, j].Piece;
+                    Position position = board.Positions[i, j];
+                    if(position.Selected) Console.BackgroundColor = ConsoleColor.Green;
+                    else Console.BackgroundColor = ConsoleColor.Black;
+                    
+                    Piece? piece = position.Piece;
                     if(piece != null)
                     {
                         if(piece.Color == Color.Black) Console.ForegroundColor = ConsoleColor.DarkYellow;
                         else Console.ForegroundColor = ConsoleColor.White;
                     }
-                    Console.Write($" {(piece != null ? piece : " ")} ");
+                    else Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                    Console.Write($" {(piece != null ? piece : "O")} ");
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($" {8 - i}");

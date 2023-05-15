@@ -10,5 +10,10 @@ namespace ConsoleChess.Entities.Pieces
         {
             return "K";
         }
+
+        public override List<Move> GetMoves(Board board)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

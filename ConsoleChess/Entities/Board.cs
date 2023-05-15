@@ -7,50 +7,81 @@ namespace ConsoleChess.Entities
     {
         public Position[,] Positions {get;}
 
-        public Board()
+        public Board(string format = "Entities\\default.txt")
         {
             Positions = new Position[8, 8];
 
-            // Empty positions:
+            StreamReader sr = new StreamReader(format);
+
             for(int i = 0; i < 8; i++)
             {
+                string line = sr.ReadLine() ?? "";
+                string[] pieces = line.Trim().Split(' ');
+
                 for(int j = 0; j < 8; j++)
                 {
                     Positions[i, j] = new Position(i, j);
+                    Position position = Positions[i, j];
+
+                    char piece = char.Parse(pieces[j]);
+                    Color color = char.IsLower(piece) ? Color.White : Color.Black;
+                    piece = char.ToUpper(piece);
+
+                    switch(piece)
+                    {
+                        case 'R':
+                            new Rook(color, position);
+                            break;
+                        case 'N':
+                            new Knight(color, position);
+                            break;
+                        case 'B':
+                            new Bishop(color, position);
+                            break;
+                        case 'Q':
+                            new Queen(color, position);
+                            break;
+                        case 'K':
+                            new King(color, position);
+                            break;
+                        case 'P':
+                            new Pawn(color, position);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
-            // Pawns:
-            for(int j = 0; j < 8; j++)
-            {
-                new Pawn(Color.Black, Positions[1, j]);
-                new Pawn(Color.White, Positions[6, j]);
-            }
-            // Rooks:
-            new Rook(Color.Black, Positions[0, 0]);
-            new Rook(Color.Black, Positions[0, 7]);
-            new Rook(Color.White, Positions[7, 0]);
-            new Rook(Color.White, Positions[7, 7]);
-            // Knights:
-            new Knight(Color.Black, Positions[0, 1]);
-            new Knight(Color.Black, Positions[0, 6]);
-            new Knight(Color.White, Positions[7, 1]);
-            new Knight(Color.White, Positions[7, 6]);
-            // Bishops:
-            new Bishop(Color.Black, Positions[0, 2]);
-            new Bishop(Color.Black, Positions[0, 5]);
-            new Bishop(Color.White, Positions[7, 2]);
-            new Bishop(Color.White, Positions[7, 5]);
-            // Queens:
-            new Queen(Color.Black, Positions[0, 3]);
-            new Queen(Color.White, Positions[7, 3]);
-            // Kings:
-            new King(Color.Black, Positions[0, 4]);
-            new King(Color.White, Positions[7, 4]);
         }
     
         public Position GetPosition(int line, int column)
         {
             return Positions[line, column];
+        }
+    
+        public void SelectPositions(List<Move> possibleMoves)
+        {
+            foreach(var move in possibleMoves)
+            {
+                move.FinalPosition.Selected = true;
+            }
+        }
+
+        public void UnselectPositions()
+        {
+            foreach(var position in Positions)
+            {
+                position.Selected = false;
+            }
+        }
+
+        public void MovePiece(Move? move, List<Move> possibleMoves)
+        {
+            move = possibleMoves.Find(x => x == move);
+            if(move != null)
+            {
+                move.Execute();
+            }
         }
     }
 }
