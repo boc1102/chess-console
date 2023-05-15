@@ -1,11 +1,13 @@
 using ConsoleChess.Entities;
+using ConsoleChess.Entities.Pieces;
+using ConsoleChess.Entities.Enums;
 
 namespace ConsoleChess.Game
 {
     public class ChessMatch
     {
         public Board Board {get;}
-        private int Turn {get;}
+        public int Turn {get; private set;}
         public bool Running {get;}
 
         public ChessMatch()
@@ -29,10 +31,33 @@ namespace ConsoleChess.Game
             }
         }
 
+        public void MovePiece(Move move, List<Move> possibleMoves)
+        {
+            Move? foundMove = null;
+
+            foreach(var x in possibleMoves)
+            {
+                if(x.StartPosition == move.StartPosition && x.FinalPosition == move.FinalPosition)
+                    foundMove = x;
+            }
+
+            if(foundMove != null)
+            {
+                if(foundMove.Execute())
+                {
+                    if(move.FinalPosition.Piece is Pawn pawn)
+                        if(pawn.LongStartTurn == null) pawn.LongStartTurn = Turn;
+                    
+                    Turn++;
+                }
+            }
+        }
+
         public void Update()
         {
-            Console.Clear();
             ConsoleHandler.PrintBoard(Board);
+            Color color = (Color)(Turn % 2 == 0 ? -1 : 1);
+            Console.WriteLine($"Turn: {color}");
         }
     }
 }

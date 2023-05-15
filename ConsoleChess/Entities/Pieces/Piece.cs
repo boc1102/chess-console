@@ -1,11 +1,12 @@
 using ConsoleChess.Entities.Enums;
+using ConsoleChess.Game;
 
 namespace ConsoleChess.Entities.Pieces
 {
     public abstract class Piece
     {
         public Color Color {get;}
-        public Position CurrentPosition {get;}
+        public Position CurrentPosition {get; internal set;}
 
         public Piece(Color color, Position currentPosition)
         {
@@ -14,6 +15,6 @@ namespace ConsoleChess.Entities.Pieces
             Color = color;
         }
 
-        public abstract List<Move> GetMoves(Board board);
+        public abstract List<Move> GetMoves(ChessMatch chessMatch);
     }
 }

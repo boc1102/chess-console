@@ -74,14 +74,5 @@ namespace ConsoleChess.Entities
                 position.Selected = false;
             }
         }
-
-        public void MovePiece(Move? move, List<Move> possibleMoves)
-        {
-            move = possibleMoves.Find(x => x == move);
-            if(move != null)
-            {
-                move.Execute();
-            }
-        }
     }
 }

@@ -1,4 +1,5 @@
 using ConsoleChess.Entities.Enums;
+using ConsoleChess.Game;
 
 namespace ConsoleChess.Entities.Pieces
 {
@@ -11,7 +12,7 @@ namespace ConsoleChess.Entities.Pieces
             return "R";
         }
 
-        public override List<Move> GetMoves(Board board)
+        public override List<Move> GetMoves(ChessMatch chessMatch)
         {
             throw new NotImplementedException();
         }

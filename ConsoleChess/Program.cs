@@ -8,12 +8,12 @@ while(chessMatch.Running)
 {
     try
     {
-        ConsoleHandler.PrintBoard(chessMatch.Board);
+        chessMatch.Update();
         Console.Write("Select piece: ");
         int[] index = ConsoleHandler.HandleInput(Console.ReadLine() ?? "");
         Position startPosition = chessMatch.GetStartPosition(index[0], index[1]);
 
-        List<Move> possibleMoves = startPosition.Piece!.GetMoves(board);
+        List<Move> possibleMoves = startPosition.Piece!.GetMoves(chessMatch);
         board.SelectPositions(possibleMoves);
         chessMatch.Update();
 
@@ -24,9 +24,7 @@ while(chessMatch.Running)
         chessMatch.Update();
 
         Move move = new Move(startPosition, finalPosition);
-        chessMatch.Board.MovePiece(move, possibleMoves);
-
-        Console.WriteLine(move);
+        chessMatch.MovePiece(move, possibleMoves);
     }
     catch(ApplicationException e)
     {

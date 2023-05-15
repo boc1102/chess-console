@@ -1,11 +1,11 @@
-using System.Collections;
+using ConsoleChess.Game;
 using ConsoleChess.Entities.Enums;
 
 namespace ConsoleChess.Entities.Pieces
 {
     public class Pawn : Piece
     {
-        public int? LongStartTurn {get;}
+        public int? LongStartTurn {get; internal set;}
         public Pawn(Color color, Position currentPosition) : base(color, currentPosition)
         {
             LongStartTurn = null;
@@ -16,8 +16,10 @@ namespace ConsoleChess.Entities.Pieces
             return "P";
         }
 
-        public override List<Move> GetMoves(Board board)
+        public override List<Move> GetMoves(ChessMatch chessMatch)
         {
+            Board board = chessMatch.Board;
+
             int currentLine = CurrentPosition.Line;
             int currentCollumn = CurrentPosition.Column;
 
@@ -47,6 +49,22 @@ namespace ConsoleChess.Entities.Pieces
             if(takeLeft.Piece != null)
                 if(takeLeft.Piece.Color != Color) possibleMoves.Add(new Move(CurrentPosition, takeLeft));
 
+            Position enPassantRight = positions[currentLine, currentCollumn + 1];
+            if(enPassantRight.Piece is Pawn rightPawn)
+                if(rightPawn.Color != Color && rightPawn.LongStartTurn == chessMatch.Turn - 1)
+                {
+                    Position position = positions[currentLine + 1 * (int)Color, currentCollumn + 1];
+                    possibleMoves.Add(new Move(CurrentPosition, position, enPassantRight));
+                }
+
+            Position enPassantLeft = positions[currentLine, currentCollumn - 1];
+            if(enPassantLeft.Piece is Pawn leftPawn)
+                if(leftPawn.Color != Color && leftPawn.LongStartTurn == chessMatch.Turn - 1)
+                {
+                    Position position = positions[currentLine + 1 * (int)Color, currentCollumn - 1];
+                    possibleMoves.Add(new Move(CurrentPosition, position, enPassantLeft));
+                }
+            
             return possibleMoves;
         }
     }
