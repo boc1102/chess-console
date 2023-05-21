@@ -6,18 +6,22 @@ namespace ConsoleChess.Entities
     {
         public Position StartPosition {get;}
         public Position FinalPosition {get;}
+        public Piece? StartingPiece {get;}
+        public Piece? FinalPiece {get;}
         public Position? EnPassant {get;}
 
         public Move(Position startPosition, Position finalPosition, Position? enPassant = null)
         {
             StartPosition = startPosition;
+            StartingPiece = startPosition.Piece;
             FinalPosition = finalPosition;
+            FinalPiece = finalPosition.Piece;
             EnPassant = enPassant;
         }
 
         public bool Execute()
         {
-            StartPosition.Piece!.CurrentPosition = FinalPosition;
+            StartingPiece!.CurrentPosition = FinalPosition;
             FinalPosition.Piece = StartPosition.Piece;
             StartPosition.Piece = null;
             if(EnPassant != null)
@@ -25,6 +29,14 @@ namespace ConsoleChess.Entities
                 EnPassant.Piece = null;
             }
             return true;
+        }
+
+        public void Reverse()
+        {
+            StartingPiece!.CurrentPosition = StartPosition;
+            StartPosition.Piece = StartingPiece;
+            if(FinalPiece != null) FinalPiece.CurrentPosition = FinalPosition;
+            FinalPosition.Piece = FinalPiece;
         }
 
         public override string ToString()

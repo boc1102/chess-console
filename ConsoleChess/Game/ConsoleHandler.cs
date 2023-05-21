@@ -8,10 +8,12 @@ namespace ConsoleChess.Game
     {
         public static void PrintBoard(Board board)
         {   
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("   a  b  c  d  e  f  g  h ");
             for(int i = 0; i < 8; i++)
             {
+                Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write($"{8 - i} ");
                 for(int j = 0; j < 8; j++)
@@ -30,9 +32,11 @@ namespace ConsoleChess.Game
 
                     Console.Write($" {(piece != null ? piece : "O")} ");
                 }
+                Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($" {8 - i}");
             }
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("   a  b  c  d  e  f  g  h ");
 

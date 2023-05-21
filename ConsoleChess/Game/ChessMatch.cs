@@ -1,3 +1,4 @@
+using System.Collections;
 using ConsoleChess.Entities;
 using ConsoleChess.Entities.Pieces;
 using ConsoleChess.Entities.Enums;
@@ -7,13 +8,21 @@ namespace ConsoleChess.Game
     public class ChessMatch
     {
         public Board Board {get;}
+        public Dictionary<Color, King> Kings {get;}
+        public Color TurnColor {get; private set;}
         public int Turn {get; private set;}
         public bool Running {get;}
 
         public ChessMatch()
         {
             Board = new Board();
+            Kings = new Dictionary<Color, King>
+            {
+                {Color.Black, (King)Board.Positions[0, 4].Piece!},
+                {Color.White, (King)Board.Positions[7, 4].Piece!}
+            };
             Turn = 0;
+            TurnColor = Color.White;
             Running = true;
         }
 
@@ -45,10 +54,16 @@ namespace ConsoleChess.Game
             {
                 if(foundMove.Execute())
                 {
+                    if(Kings[TurnColor].VerifyCheck())
+                    {
+                        move.Reverse();
+                        throw new ApplicationException("Your King can't be in Check.");
+                    }
                     if(move.FinalPosition.Piece is Pawn pawn)
                         if(pawn.LongStartTurn == null) pawn.LongStartTurn = Turn;
                     
                     Turn++;
+                    TurnColor = (Color)(-(int)TurnColor);
                 }
             }
         }

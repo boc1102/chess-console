@@ -37,33 +37,53 @@ namespace ConsoleChess.Entities.Pieces
                     possibleMoves.Add(new Move(CurrentPosition, finalPosition));
             }
 
-            Position frontPosition = positions[currentLine + 1 * (int)Color, currentCollumn];
-            if(frontPosition.Piece == null)
-                possibleMoves.Add(new Move(CurrentPosition, frontPosition));
+            try
+            {
+                Position frontPosition = positions[currentLine + 1 * (int)Color, currentCollumn];
+                if(frontPosition.Piece == null)
+                    possibleMoves.Add(new Move(CurrentPosition, frontPosition));
+            }
+            catch(IndexOutOfRangeException){}
+            
+            try
+            {
+                Position takeRight = positions[currentLine + 1 * (int)Color, currentCollumn + 1];
+                if(takeRight.Piece != null)
+                    if(takeRight.Piece.Color != Color) possibleMoves.Add(new Move(CurrentPosition, takeRight));
+            }
+            catch(IndexOutOfRangeException){}
 
-            Position takeRight = positions[currentLine + 1 * (int)Color, currentCollumn + 1];
-            if(takeRight.Piece != null)
-                if(takeRight.Piece.Color != Color) possibleMoves.Add(new Move(CurrentPosition, takeRight));
+            try
+            {
+                Position takeLeft = positions[currentLine + 1 * (int)Color, currentCollumn - 1];
+                if(takeLeft.Piece != null)
+                    if(takeLeft.Piece.Color != Color) possibleMoves.Add(new Move(CurrentPosition, takeLeft));
+            }
+            catch(IndexOutOfRangeException){}
 
-            Position takeLeft = positions[currentLine + 1 * (int)Color, currentCollumn - 1];
-            if(takeLeft.Piece != null)
-                if(takeLeft.Piece.Color != Color) possibleMoves.Add(new Move(CurrentPosition, takeLeft));
-
-            Position enPassantRight = positions[currentLine, currentCollumn + 1];
-            if(enPassantRight.Piece is Pawn rightPawn)
-                if(rightPawn.Color != Color && rightPawn.LongStartTurn == chessMatch.Turn - 1)
-                {
-                    Position position = positions[currentLine + 1 * (int)Color, currentCollumn + 1];
-                    possibleMoves.Add(new Move(CurrentPosition, position, enPassantRight));
-                }
-
-            Position enPassantLeft = positions[currentLine, currentCollumn - 1];
-            if(enPassantLeft.Piece is Pawn leftPawn)
-                if(leftPawn.Color != Color && leftPawn.LongStartTurn == chessMatch.Turn - 1)
-                {
-                    Position position = positions[currentLine + 1 * (int)Color, currentCollumn - 1];
-                    possibleMoves.Add(new Move(CurrentPosition, position, enPassantLeft));
-                }
+            try
+            {
+                Position enPassantRight = positions[currentLine, currentCollumn + 1];
+                if(enPassantRight.Piece is Pawn rightPawn)
+                    if(rightPawn.Color != Color && rightPawn.LongStartTurn == chessMatch.Turn - 1)
+                    {
+                        Position position = positions[currentLine + 1 * (int)Color, currentCollumn + 1];
+                        possibleMoves.Add(new Move(CurrentPosition, position, enPassantRight));
+                    }
+            }
+            catch(IndexOutOfRangeException){}
+            
+            try
+            {
+                Position enPassantLeft = positions[currentLine, currentCollumn - 1];
+                if(enPassantLeft.Piece is Pawn leftPawn)
+                    if(leftPawn.Color != Color && leftPawn.LongStartTurn == chessMatch.Turn - 1)
+                    {
+                        Position position = positions[currentLine + 1 * (int)Color, currentCollumn - 1];
+                        possibleMoves.Add(new Move(CurrentPosition, position, enPassantLeft));
+                    }
+            }
+            catch(IndexOutOfRangeException){}
             
             return possibleMoves;
         }
