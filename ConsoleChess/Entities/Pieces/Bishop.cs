@@ -16,7 +16,8 @@ namespace ConsoleChess.Entities.Pieces
         {
             List<Move> possibleMoves = new List<Move>();
             Board board = chessMatch.Board;
-            return Movement.DiagonalMovement(possibleMoves, board, this);
+            Movement.DiagonalMovement(possibleMoves, board, this);
+            return possibleMoves;
         }
     }
 }

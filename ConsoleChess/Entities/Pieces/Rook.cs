@@ -14,7 +14,10 @@ namespace ConsoleChess.Entities.Pieces
 
         public override List<Move> GetMoves(ChessMatch chessMatch)
         {
-            throw new NotImplementedException();
+            List<Move> possibleMoves = new List<Move>();
+            Board board = chessMatch.Board;
+            Movement.HorizontalMovement(possibleMoves, board, this);
+            return possibleMoves;
         }
     }
 }

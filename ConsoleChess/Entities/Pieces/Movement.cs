@@ -13,7 +13,7 @@ namespace ConsoleChess.Entities.Pieces
                 }
             return true;
         }
-        public static List<Move> KnightMovement(List<Move> possibleMoves, Board board, Piece piece)
+        public static void KnightMovement(List<Move> possibleMoves, Board board, Piece piece)
         {
             int line = piece.CurrentPosition.Line;
             int column = piece.CurrentPosition.Column;
@@ -81,11 +81,9 @@ namespace ConsoleChess.Entities.Pieces
                     possibleMoves.Add(new Move(piece.CurrentPosition, backLongLeftPosition));
             }
             catch(IndexOutOfRangeException){}
-            
-            return possibleMoves;
         }
     
-        public static List<Move> DiagonalMovement(List<Move> possibleMoves, Board board, Piece piece)
+        public static void DiagonalMovement(List<Move> possibleMoves, Board board, Piece piece)
         {
             int size = board.Positions.Length;
             int line = piece.CurrentPosition.Line;
@@ -138,8 +136,61 @@ namespace ConsoleChess.Entities.Pieces
                     if(pos.Piece != null) break;
                 }
             }catch(IndexOutOfRangeException){}
-            
-            return possibleMoves;
+        }
+    
+        public static void HorizontalMovement(List<Move> possibleMoves, Board board, Piece piece)
+        {
+            int size = board.Positions.Length;
+            int line = piece.CurrentPosition.Line;
+            int column = piece.CurrentPosition.Column;
+
+            // Left:
+            try
+            {
+                for(int i = 1; i < size; i++)
+                {
+                    Position pos = board.Positions[line, column - i];
+                    if(CheckMove(pos, piece))
+                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    if(pos.Piece != null) break;
+                }
+            }catch(IndexOutOfRangeException){}
+
+            // Right:
+            try
+            {
+                for(int i = 1; i < size; i++)
+                {
+                    Position pos = board.Positions[line, column + i];
+                    if(CheckMove(pos, piece))
+                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    if(pos.Piece != null) break;
+                }
+            }catch(IndexOutOfRangeException){}
+
+            // Up:
+            try
+            {
+                for(int i = 1; i < size; i++)
+                {
+                    Position pos = board.Positions[line - i, column];
+                    if(CheckMove(pos, piece))
+                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    if(pos.Piece != null) break;
+                }
+            }catch(IndexOutOfRangeException){}
+
+            // Down:
+            try
+            {
+                for(int i = 1; i < size; i++)
+                {
+                    Position pos = board.Positions[line + i, column];
+                    if(CheckMove(pos, piece))
+                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    if(pos.Piece != null) break;
+                }
+            }catch(IndexOutOfRangeException){}
         }
     }
 }
