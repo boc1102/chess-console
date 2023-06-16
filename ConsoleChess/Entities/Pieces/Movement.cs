@@ -84,5 +84,62 @@ namespace ConsoleChess.Entities.Pieces
             
             return possibleMoves;
         }
+    
+        public static List<Move> DiagonalMovement(List<Move> possibleMoves, Board board, Piece piece)
+        {
+            int size = board.Positions.Length;
+            int line = piece.CurrentPosition.Line;
+            int column = piece.CurrentPosition.Column;
+
+            // Top-right diagonal:
+            try
+            {
+                for(int i = 1; i < size; i++)
+                {
+                    Position pos = board.Positions[line - i, column + i];
+                    if(CheckMove(pos, piece))
+                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    if(pos.Piece != null) break;
+                }
+            }catch(IndexOutOfRangeException){}
+
+            // Top-left diagonal:
+            try
+            {
+                for(int i = 1; i < size; i++)
+                {
+                    Position pos = board.Positions[line - i, column - i];
+                    if(CheckMove(pos, piece))
+                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    if(pos.Piece != null) break;
+                }
+            }catch(IndexOutOfRangeException){}
+
+            // Bottom-right diagonal:
+            try
+            {
+                for(int i = 1; i < size; i++)
+                {
+                    Position pos = board.Positions[line + i, column + i];
+                    if(CheckMove(pos, piece))
+                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    if(pos.Piece != null) break;
+                }
+            }catch(IndexOutOfRangeException){}
+
+            // Bottom-left diagonal:
+            try
+            {
+                for(int i = 1; i < size; i++)
+                {
+                    Position pos = board.Positions[line + i, column - i];
+                    if(CheckMove(pos, piece))
+                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    if(pos.Piece != null) break;
+                }
+            }catch(IndexOutOfRangeException){}
+            
+            return possibleMoves;
+        }
     }
 }
