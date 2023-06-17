@@ -3,15 +3,16 @@ using ConsoleChess.Entities;
 
 ChessMatch chessMatch = new ChessMatch();
 Board board = chessMatch.Board;
+chessMatch.Update();
 
 while(chessMatch.Running)
 {
     try
     {
-        chessMatch.Update();
         Console.Write("Select piece: ");
         int[] index = ConsoleHandler.HandleInput(Console.ReadLine() ?? "");
         Position startPosition = chessMatch.GetStartPosition(index[0], index[1]);
+        chessMatch.Update();
 
         List<Move> possibleMoves = startPosition.Piece!.GetMoves(chessMatch);
         board.SelectPositions(possibleMoves);
@@ -25,10 +26,11 @@ while(chessMatch.Running)
 
         Move move = new Move(startPosition, finalPosition);
         chessMatch.MovePiece(move, possibleMoves);
+        chessMatch.Update();
     }
     catch(ApplicationException e)
     {
-        Console.WriteLine(e.Message);
+        chessMatch.Update(e.Message);
     }
 }
 

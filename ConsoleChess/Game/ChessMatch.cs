@@ -54,10 +54,10 @@ namespace ConsoleChess.Game
             {
                 if(foundMove.Execute())
                 {
-                    if(Kings[TurnColor].VerifyCheck())
+                    if(Kings[TurnColor].VerifyCheck(Board))
                     {
                         move.Reverse();
-                        throw new ApplicationException("Your King can't be in Check.");
+                        throw new ApplicationException("Your King can't be in Check at the end of your turn.");
                     }
                     if(move.FinalPosition.Piece is Pawn pawn)
                         if(pawn.LongStartTurn == null) pawn.LongStartTurn = Turn;
@@ -68,10 +68,15 @@ namespace ConsoleChess.Game
             }
         }
 
-        public void Update()
+        public void Update(string error = "")
         {
+            Console.Clear();
             ConsoleHandler.PrintBoard(Board);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(error);
+            Console.ForegroundColor = ConsoleColor.White;
             Color color = (Color)(Turn % 2 == 0 ? -1 : 1);
+            if(Kings[TurnColor].VerifyCheck(Board)) Console.WriteLine("Check!");
             Console.WriteLine($"Turn: {color}");
         }
     }
