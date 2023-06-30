@@ -5,6 +5,7 @@ namespace ConsoleChess.Entities.Pieces
 {
     public class Rook : Piece
     {
+        public bool Moved {get; internal set;}
         public Rook(Color color, Position currentPosition) : base(color, currentPosition){}
 
         public override string ToString()

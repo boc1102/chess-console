@@ -54,14 +54,25 @@ namespace ConsoleChess.Game
             {
                 if(foundMove.Execute())
                 {
+                    Piece? finalPiece = move.FinalPosition.Piece;
                     if(Kings[TurnColor].VerifyCheck(Board))
                     {
                         move.Reverse();
                         throw new ApplicationException("Your King can't be in Check at the end of your turn.");
                     }
-                    if(move.FinalPosition.Piece is Pawn pawn)
+                    if(finalPiece is Pawn pawn)
                         if(pawn.LongStartTurn == null) pawn.LongStartTurn = Turn;
-                    
+                    if(finalPiece is King {Moved: false})
+                    {
+                        King king = (finalPiece as King)!;
+                        king.Moved = true;
+                    } 
+                    if(finalPiece is Rook {Moved: false})
+                    {
+                        Rook rook = (finalPiece as Rook)!;
+                        rook.Moved = true;
+                    }
+
                     Turn++;
                     TurnColor = (Color)(-(int)TurnColor);
                 }

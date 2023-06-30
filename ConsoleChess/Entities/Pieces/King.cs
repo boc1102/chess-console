@@ -5,6 +5,7 @@ namespace ConsoleChess.Entities.Pieces
 {
     public class King : Piece
     {
+        public bool Moved{get; internal set;}
         public King(Color color, Position currentPosition) : base(color, currentPosition){}
 
         public override List<Move> GetMoves(ChessMatch chessMatch)
@@ -54,6 +55,46 @@ namespace ConsoleChess.Entities.Pieces
                 Position position = positions[line + 1, column + 1];
                 if(Movement.CheckMove(position, this)) possibleMoves.Add(new Move(CurrentPosition, position));
             }catch(IndexOutOfRangeException){}
+
+            // Castling (first check):
+            if(!Moved)
+            {
+                // Castling left:
+                try
+                {
+                    Position position = positions[line, 0];
+                    if(position.Piece is Rook {Moved: false})
+                    {
+                        bool failed = false;
+                        for(int col = column - 1; col > 0; col--)
+                        {
+                            Position midPosition = positions[line, col];
+                            if(midPosition.Piece != null) failed = true;
+                        }
+                        if(!failed)
+                            possibleMoves.Add(new Move(CurrentPosition, positions[line, 1],
+                                castle: new Move(position, positions[line, 2])));
+                    }
+                }catch(IndexOutOfRangeException){}
+                // Castling right:
+                try
+                {
+                    Position position = positions[line, 7];
+                    if(position.Piece is Rook {Moved: false})
+                    {
+                        bool failed = false;
+                        for(int col = column + 1; col < 7; col++)
+                        {
+                            Position midPosition = positions[line, col];
+                            if(midPosition.Piece != null) failed = true;
+                        }
+                        if(!failed)
+                            possibleMoves.Add(new Move(CurrentPosition, positions[line, 6],
+                            castle: new Move(position, positions[line, 5])));
+                    }
+                }catch(IndexOutOfRangeException){}
+            }
+            
 
             return possibleMoves;
         }
