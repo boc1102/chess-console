@@ -1,4 +1,5 @@
-﻿using ConsoleChess.Game;
+﻿using ConsoleChess.Exceptions;
+using ConsoleChess.Game;
 using ConsoleChess.Entities;
 
 ChessMatch chessMatch = new ChessMatch();
@@ -27,6 +28,15 @@ while(chessMatch.Running)
         Move move = new Move(startPosition, finalPosition);
         chessMatch.MovePiece(move, possibleMoves);
         chessMatch.Update();
+    }
+    catch(MateException e)
+    {
+        Console.Clear();
+        ConsoleHandler.PrintBoard(board);
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine(e.Message);
+        Console.ResetColor();
+        chessMatch.Running = false;
     }
     catch(ApplicationException e)
     {

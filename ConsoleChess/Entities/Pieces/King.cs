@@ -1,3 +1,4 @@
+using ConsoleChess.Exceptions;
 using ConsoleChess.Entities.Enums;
 using ConsoleChess.Game;
 
@@ -254,9 +255,25 @@ namespace ConsoleChess.Entities.Pieces
             return false;
         }
 
-        public void VerifyCheckMate(Move checkingMove)
+        public void VerifyMate(ChessMatch chessMatch)
         {
-            List<Position> positions = new List<Position>();
+            Board board = chessMatch.Board;
+            List<Move> moves = new List<Move>();
+            foreach(var position in board.Positions)
+            {
+                if(position.Piece != null)
+                {
+                    if(position.Piece.Color == Color)
+                    {
+                        moves.AddRange(position.Piece.GetMoves(chessMatch));
+                    }
+                }
+            }
+            if(moves.Count == 0)
+            {
+                if(Checked) throw new MateException($"Check-mate!\n{(Color)((-1)*(int)Color)} wins!");
+                throw new MateException("Stale-mate!\nIt's a draw!");
+            }
         }
         
         public override string ToString()

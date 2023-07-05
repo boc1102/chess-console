@@ -11,7 +11,7 @@ namespace ConsoleChess.Game
         public Dictionary<Color, King> Kings {get;}
         public Color TurnColor {get; private set;}
         public int Turn {get; private set;}
-        public bool Running {get;}
+        public bool Running {get; internal set;}
 
         public ChessMatch()
         {
@@ -76,15 +76,19 @@ namespace ConsoleChess.Game
 
                 if(Kings[TurnColor].VerifyCheck(this)) Kings[TurnColor].Checked = true;
                 else Kings[TurnColor].Checked = false;
+
+                Kings[TurnColor].VerifyMate(this);
             }
+            else throw new ApplicationException("Invalid Move!");
         }
 
         public void Update(string error = "")
         {
+            System.Console.Clear();
             ConsoleHandler.PrintBoard(Board);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(error);
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ResetColor();
             Color color = (Color)(Turn % 2 == 0 ? -1 : 1);
             if(Kings[TurnColor].Checked) Console.WriteLine("Check!");
             Console.WriteLine($"Turn: {color}");
