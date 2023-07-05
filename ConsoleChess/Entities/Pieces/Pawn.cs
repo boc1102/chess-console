@@ -111,5 +111,12 @@ namespace ConsoleChess.Entities.Pieces
             
             return possibleMoves;
         }
+
+        public bool CheckPromotion()
+        {
+            int finalLine = Color == Color.White ? 0 : 7; 
+            if(CurrentPosition.Line == finalLine) return true;
+            return false;
+        }
     }
 }

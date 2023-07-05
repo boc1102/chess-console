@@ -1,6 +1,7 @@
 ﻿using ConsoleChess.Exceptions;
 using ConsoleChess.Game;
 using ConsoleChess.Entities;
+using ConsoleChess.Entities.Pieces;
 
 ChessMatch chessMatch = new ChessMatch();
 Board board = chessMatch.Board;
@@ -37,6 +38,51 @@ while(chessMatch.Running)
         Console.WriteLine(e.Message);
         Console.ResetColor();
         chessMatch.Running = false;
+    }
+    catch(PromotionException e)
+    {
+        bool promoted = false;
+        
+        while(!promoted)
+        {
+            Console.Clear();
+            ConsoleHandler.PrintBoard(board);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(e.Message);
+            Console.WriteLine("Select piece ('Q', 'N', 'B', 'R'):");
+            
+            string input = Console.ReadLine() ?? "";
+            switch(input.ToUpper())
+            {
+                case "Q": 
+                    new Queen(e.Piece.Color, e.Piece.CurrentPosition);
+                    promoted = true;
+                    break;
+                case "N": 
+                    new Knight(e.Piece.Color, e.Piece.CurrentPosition);
+                    promoted = true;
+                    break;
+                case "B": 
+                    new Bishop(e.Piece.Color, e.Piece.CurrentPosition);
+                    promoted = true;
+                    break;
+                case "R": 
+                    new Rook(e.Piece.Color, e.Piece.CurrentPosition);
+                    promoted = true;
+                    break;
+            }
+        }
+
+        Console.ResetColor();
+        chessMatch.Update();
+    }
+    catch(FormatException)
+    {
+        chessMatch.Update("Invalid entry!");
+    }
+    catch(IndexOutOfRangeException)
+    {
+        chessMatch.Update("Invalid entry!");
     }
     catch(ApplicationException e)
     {

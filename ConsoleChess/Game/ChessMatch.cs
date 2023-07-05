@@ -1,4 +1,4 @@
-using System.Collections;
+using ConsoleChess.Exceptions;
 using ConsoleChess.Entities;
 using ConsoleChess.Entities.Pieces;
 using ConsoleChess.Entities.Enums;
@@ -31,12 +31,12 @@ namespace ConsoleChess.Game
             Position position = Board.GetPosition(line, column);
             int turnColor = Turn % 2 == 0 ? -1 : 1;
 
-            if(position.Piece == null) throw new ApplicationException("This shits null!!!");
+            if(position.Piece == null) throw new ApplicationException();
             else
             {
                 if((int)position.Piece.Color == turnColor)
                     return position;
-                else throw new ApplicationException("It's not your fucking turn!!!");
+                else throw new ApplicationException();
             }
         }
 
@@ -56,7 +56,12 @@ namespace ConsoleChess.Game
                 Piece? finalPiece = move.FinalPosition.Piece;
 
                 if(finalPiece is Pawn pawn)
+                {
                     if(pawn.LongStartTurn == null) pawn.LongStartTurn = Turn;
+                    if(pawn.CheckPromotion())
+                        throw new PromotionException($"{finalPiece.CurrentPosition} promotion...", pawn);
+                }
+                    
                 if(finalPiece is King {Moved: false})
                 {
                     King king = (finalPiece as King)!;
