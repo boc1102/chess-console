@@ -6,7 +6,10 @@ namespace ConsoleChess.Entities.Pieces
     public class Rook : Piece
     {
         public bool Moved {get; internal set;}
-        public Rook(Color color, Position currentPosition) : base(color, currentPosition){}
+        public Rook(Color color, Position currentPosition) : base(color, currentPosition)
+        {
+            Moved = false;
+        }
 
         public override string ToString()
         {
@@ -17,7 +20,7 @@ namespace ConsoleChess.Entities.Pieces
         {
             List<Move> possibleMoves = new List<Move>();
             Board board = chessMatch.Board;
-            Movement.HorizontalMovement(possibleMoves, board, this);
+            Movement.HorizontalMovement(possibleMoves, chessMatch, this);
             return possibleMoves;
         }
     }

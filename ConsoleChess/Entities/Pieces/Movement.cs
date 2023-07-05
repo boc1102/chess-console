@@ -1,4 +1,4 @@
-
+using ConsoleChess.Game;
 
 namespace ConsoleChess.Entities.Pieces
 {
@@ -13,8 +13,12 @@ namespace ConsoleChess.Entities.Pieces
                 }
             return true;
         }
-        public static void KnightMovement(List<Move> possibleMoves, Board board, Piece piece)
+        public static void KnightMovement(List<Move> possibleMoves, ChessMatch chessMatch,
+            Piece piece, bool verifying = false)
         {
+            King king = chessMatch.Kings[chessMatch.TurnColor];
+            Board board = chessMatch.Board;
+
             int line = piece.CurrentPosition.Line;
             int column = piece.CurrentPosition.Column;
 
@@ -22,7 +26,11 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position frontShortRightPosition = board.Positions[line - 1, column + 2];
                 if(CheckMove(frontShortRightPosition, piece))
-                    possibleMoves.Add(new Move(piece.CurrentPosition, frontShortRightPosition));
+                {
+                    Move move = new Move(piece.CurrentPosition, frontShortRightPosition);
+                    if(verifying) possibleMoves.Add(move);
+                    else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                }
             }
             catch(IndexOutOfRangeException){}
 
@@ -30,7 +38,11 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position frontShortLeftPosition = board.Positions[line - 1, column - 2];
                 if(CheckMove(frontShortLeftPosition, piece))
-                    possibleMoves.Add(new Move(piece.CurrentPosition, frontShortLeftPosition));
+                {
+                    Move move = new Move(piece.CurrentPosition, frontShortLeftPosition);
+                    if(verifying) possibleMoves.Add(move);
+                    else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                }
             }
             catch(IndexOutOfRangeException){}
 
@@ -38,7 +50,11 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position frontLongRightPosition = board.Positions[line - 2, column + 1];
                 if(CheckMove(frontLongRightPosition, piece))
-                    possibleMoves.Add(new Move(piece.CurrentPosition, frontLongRightPosition));
+                {
+                    Move move = new Move(piece.CurrentPosition, frontLongRightPosition);
+                    if(verifying) possibleMoves.Add(move);
+                    else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                }
             }
             catch(IndexOutOfRangeException){}
 
@@ -46,7 +62,11 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position frontLongLeftPosition = board.Positions[line - 2, column - 1];
                 if(CheckMove(frontLongLeftPosition, piece))
-                    possibleMoves.Add(new Move(piece.CurrentPosition, frontLongLeftPosition));
+                {
+                    Move move = new Move(piece.CurrentPosition, frontLongLeftPosition);
+                    if(verifying) possibleMoves.Add(move);
+                    else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                }
             }
             catch(IndexOutOfRangeException){}
 
@@ -54,7 +74,11 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position backShortRightPosition = board.Positions[line + 1, column + 2];
                 if(CheckMove(backShortRightPosition, piece))
-                    possibleMoves.Add(new Move(piece.CurrentPosition, backShortRightPosition));
+                {
+                    Move move = new Move(piece.CurrentPosition, backShortRightPosition);
+                    if(verifying) possibleMoves.Add(move);
+                    else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                }
             }
             catch(IndexOutOfRangeException){}
 
@@ -62,7 +86,11 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position backShortLeftPosition = board.Positions[line + 1, column - 2];
                 if(CheckMove(backShortLeftPosition, piece))
-                    possibleMoves.Add(new Move(piece.CurrentPosition, backShortLeftPosition));
+                {
+                    Move move = new Move(piece.CurrentPosition, backShortLeftPosition);
+                    if(verifying) possibleMoves.Add(move);
+                    else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                }
             }
             catch(IndexOutOfRangeException){}
 
@@ -70,7 +98,11 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position backLongRightPosition = board.Positions[line + 2, column + 1];
                 if(CheckMove(backLongRightPosition, piece))
-                    possibleMoves.Add(new Move(piece.CurrentPosition, backLongRightPosition));
+                {
+                    Move move = new Move(piece.CurrentPosition, backLongRightPosition);
+                    if(verifying) possibleMoves.Add(move);
+                    else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                }
             }
             catch(IndexOutOfRangeException){}
             
@@ -78,13 +110,21 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position backLongLeftPosition = board.Positions[line + 2, column - 1];
                 if(CheckMove(backLongLeftPosition, piece))
-                    possibleMoves.Add(new Move(piece.CurrentPosition, backLongLeftPosition));
+                {
+                    Move move = new Move(piece.CurrentPosition, backLongLeftPosition);
+                    if(verifying) possibleMoves.Add(move);
+                    else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                }
             }
             catch(IndexOutOfRangeException){}
         }
     
-        public static void DiagonalMovement(List<Move> possibleMoves, Board board, Piece piece)
+        public static void DiagonalMovement(List<Move> possibleMoves, ChessMatch chessMatch,
+            Piece piece, bool verifying = false)
         {
+            King king = chessMatch.Kings[chessMatch.TurnColor];
+            Board board = chessMatch.Board;
+
             int size = board.Positions.Length;
             int line = piece.CurrentPosition.Line;
             int column = piece.CurrentPosition.Column;
@@ -96,7 +136,11 @@ namespace ConsoleChess.Entities.Pieces
                 {
                     Position pos = board.Positions[line - i, column + i];
                     if(CheckMove(pos, piece))
-                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    {
+                        Move move = new Move(piece.CurrentPosition, pos);
+                        if(verifying) possibleMoves.Add(move);
+                        else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                    }
                     if(pos.Piece != null) break;
                 }
             }catch(IndexOutOfRangeException){}
@@ -108,7 +152,11 @@ namespace ConsoleChess.Entities.Pieces
                 {
                     Position pos = board.Positions[line - i, column - i];
                     if(CheckMove(pos, piece))
-                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    {
+                        Move move = new Move(piece.CurrentPosition, pos);
+                        if(verifying) possibleMoves.Add(move);
+                        else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                    }
                     if(pos.Piece != null) break;
                 }
             }catch(IndexOutOfRangeException){}
@@ -120,7 +168,11 @@ namespace ConsoleChess.Entities.Pieces
                 {
                     Position pos = board.Positions[line + i, column + i];
                     if(CheckMove(pos, piece))
-                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    {
+                        Move move = new Move(piece.CurrentPosition, pos);
+                        if(verifying) possibleMoves.Add(move);
+                        else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                    }
                     if(pos.Piece != null) break;
                 }
             }catch(IndexOutOfRangeException){}
@@ -132,14 +184,22 @@ namespace ConsoleChess.Entities.Pieces
                 {
                     Position pos = board.Positions[line + i, column - i];
                     if(CheckMove(pos, piece))
-                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    {
+                        Move move = new Move(piece.CurrentPosition, pos);
+                        if(verifying) possibleMoves.Add(move);
+                        else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                    }
                     if(pos.Piece != null) break;
                 }
             }catch(IndexOutOfRangeException){}
         }
     
-        public static void HorizontalMovement(List<Move> possibleMoves, Board board, Piece piece)
+        public static void HorizontalMovement(List<Move> possibleMoves, ChessMatch chessMatch,
+        Piece piece, bool verifying = false)
         {
+            King king = chessMatch.Kings[chessMatch.TurnColor];
+            Board board = chessMatch.Board;
+
             int size = board.Positions.Length;
             int line = piece.CurrentPosition.Line;
             int column = piece.CurrentPosition.Column;
@@ -151,7 +211,11 @@ namespace ConsoleChess.Entities.Pieces
                 {
                     Position pos = board.Positions[line, column - i];
                     if(CheckMove(pos, piece))
-                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    {
+                        Move move = new Move(piece.CurrentPosition, pos);
+                        if(verifying) possibleMoves.Add(move);
+                        else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                    }
                     if(pos.Piece != null) break;
                 }
             }catch(IndexOutOfRangeException){}
@@ -163,7 +227,11 @@ namespace ConsoleChess.Entities.Pieces
                 {
                     Position pos = board.Positions[line, column + i];
                     if(CheckMove(pos, piece))
-                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    {
+                        Move move = new Move(piece.CurrentPosition, pos);
+                        if(verifying) possibleMoves.Add(move);
+                        else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                    }
                     if(pos.Piece != null) break;
                 }
             }catch(IndexOutOfRangeException){}
@@ -175,7 +243,11 @@ namespace ConsoleChess.Entities.Pieces
                 {
                     Position pos = board.Positions[line - i, column];
                     if(CheckMove(pos, piece))
-                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    {
+                        Move move = new Move(piece.CurrentPosition, pos);
+                        if(verifying) possibleMoves.Add(move);
+                        else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                    }
                     if(pos.Piece != null) break;
                 }
             }catch(IndexOutOfRangeException){}
@@ -187,7 +259,11 @@ namespace ConsoleChess.Entities.Pieces
                 {
                     Position pos = board.Positions[line + i, column];
                     if(CheckMove(pos, piece))
-                        possibleMoves.Add(new Move(piece.CurrentPosition, pos));
+                    {
+                        Move move = new Move(piece.CurrentPosition, pos);
+                        if(verifying) possibleMoves.Add(move);
+                        else if(!king.VerifyCheck(chessMatch, move)) possibleMoves.Add(move);
+                    }
                     if(pos.Piece != null) break;
                 }
             }catch(IndexOutOfRangeException){}

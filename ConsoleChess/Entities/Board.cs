@@ -63,6 +63,7 @@ namespace ConsoleChess.Entities
         {
             foreach(var move in possibleMoves)
             {
+                move.StartPosition.Selected = true;
                 move.FinalPosition.Selected = true;
             }
         }

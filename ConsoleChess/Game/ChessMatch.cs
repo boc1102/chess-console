@@ -52,42 +52,41 @@ namespace ConsoleChess.Game
 
             if(foundMove != null)
             {
-                if(foundMove.Execute())
-                {
-                    Piece? finalPiece = move.FinalPosition.Piece;
-                    if(Kings[TurnColor].VerifyCheck(Board))
-                    {
-                        move.Reverse();
-                        throw new ApplicationException("Your King can't be in Check at the end of your turn.");
-                    }
-                    if(finalPiece is Pawn pawn)
-                        if(pawn.LongStartTurn == null) pawn.LongStartTurn = Turn;
-                    if(finalPiece is King {Moved: false})
-                    {
-                        King king = (finalPiece as King)!;
-                        king.Moved = true;
-                    } 
-                    if(finalPiece is Rook {Moved: false})
-                    {
-                        Rook rook = (finalPiece as Rook)!;
-                        rook.Moved = true;
-                    }
+                foundMove.Execute();
+                Piece? finalPiece = move.FinalPosition.Piece;
 
-                    Turn++;
-                    TurnColor = (Color)(-(int)TurnColor);
+                if(finalPiece is Pawn pawn)
+                    if(pawn.LongStartTurn == null) pawn.LongStartTurn = Turn;
+                if(finalPiece is King {Moved: false})
+                {
+                    King king = (finalPiece as King)!;
+                    king.Moved = true;
+                } 
+                if(finalPiece is Rook {Moved: false})
+                {
+                    Rook rook = (finalPiece as Rook)!;
+                    rook.Moved = true;
                 }
+
+                if(Kings[TurnColor].VerifyCheck(this)) Kings[TurnColor].Checked = true;
+                else Kings[TurnColor].Checked = false;
+
+                Turn++;
+                TurnColor = (Color)(-(int)TurnColor);
+
+                if(Kings[TurnColor].VerifyCheck(this)) Kings[TurnColor].Checked = true;
+                else Kings[TurnColor].Checked = false;
             }
         }
 
         public void Update(string error = "")
         {
-            Console.Clear();
             ConsoleHandler.PrintBoard(Board);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(error);
             Console.ForegroundColor = ConsoleColor.White;
             Color color = (Color)(Turn % 2 == 0 ? -1 : 1);
-            if(Kings[TurnColor].VerifyCheck(Board)) Console.WriteLine("Check!");
+            if(Kings[TurnColor].Checked) Console.WriteLine("Check!");
             Console.WriteLine($"Turn: {color}");
         }
     }

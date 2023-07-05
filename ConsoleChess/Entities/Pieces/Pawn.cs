@@ -18,6 +18,7 @@ namespace ConsoleChess.Entities.Pieces
 
         public override List<Move> GetMoves(ChessMatch chessMatch)
         {
+            King king = chessMatch.Kings[chessMatch.TurnColor];
             Board board = chessMatch.Board;
 
             int currentLine = CurrentPosition.Line;
@@ -34,14 +35,23 @@ namespace ConsoleChess.Entities.Pieces
                 Position finalPosition = positions[line, currentCollumn];
 
                 if(midPosition.Piece == null && finalPosition.Piece == null)
-                    possibleMoves.Add(new Move(CurrentPosition, finalPosition));
+                {
+                    Move move = new Move(CurrentPosition, finalPosition);
+                    if(!king.VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
             }
 
             try
             {
                 Position frontPosition = positions[currentLine + 1 * (int)Color, currentCollumn];
                 if(frontPosition.Piece == null)
-                    possibleMoves.Add(new Move(CurrentPosition, frontPosition));
+                {
+                    Move move = new Move(CurrentPosition, frontPosition);
+                    if(!king.VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
+                    
             }
             catch(IndexOutOfRangeException){}
             
@@ -49,7 +59,12 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position takeRight = positions[currentLine + 1 * (int)Color, currentCollumn + 1];
                 if(takeRight.Piece != null)
-                    if(takeRight.Piece.Color != Color) possibleMoves.Add(new Move(CurrentPosition, takeRight));
+                    if(takeRight.Piece.Color != Color)
+                    {
+                        Move move = new Move(CurrentPosition, takeRight);
+                        if(!king.VerifyCheck(chessMatch, move))
+                            possibleMoves.Add(move);
+                    }
             }
             catch(IndexOutOfRangeException){}
 
@@ -57,7 +72,12 @@ namespace ConsoleChess.Entities.Pieces
             {
                 Position takeLeft = positions[currentLine + 1 * (int)Color, currentCollumn - 1];
                 if(takeLeft.Piece != null)
-                    if(takeLeft.Piece.Color != Color) possibleMoves.Add(new Move(CurrentPosition, takeLeft));
+                    if(takeLeft.Piece.Color != Color)
+                    {
+                        Move move = new Move(CurrentPosition, takeLeft);
+                        if(!king.VerifyCheck(chessMatch, move))
+                            possibleMoves.Add(move);
+                    }
             }
             catch(IndexOutOfRangeException){}
 
@@ -68,7 +88,9 @@ namespace ConsoleChess.Entities.Pieces
                     if(rightPawn.Color != Color && rightPawn.LongStartTurn == chessMatch.Turn - 1)
                     {
                         Position position = positions[currentLine + 1 * (int)Color, currentCollumn + 1];
-                        possibleMoves.Add(new Move(CurrentPosition, position, enPassantRight));
+                        Move move = new Move(CurrentPosition, position, enPassantRight);
+                        if(!king.VerifyCheck(chessMatch, move))
+                            possibleMoves.Add(move);
                     }
             }
             catch(IndexOutOfRangeException){}
@@ -80,7 +102,9 @@ namespace ConsoleChess.Entities.Pieces
                     if(leftPawn.Color != Color && leftPawn.LongStartTurn == chessMatch.Turn - 1)
                     {
                         Position position = positions[currentLine + 1 * (int)Color, currentCollumn - 1];
-                        possibleMoves.Add(new Move(CurrentPosition, position, enPassantLeft));
+                        Move move = new Move(CurrentPosition, position, enPassantLeft);
+                        if(!king.VerifyCheck(chessMatch, move))
+                            possibleMoves.Add(move);
                     }
             }
             catch(IndexOutOfRangeException){}

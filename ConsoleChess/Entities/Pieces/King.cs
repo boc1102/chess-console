@@ -6,7 +6,12 @@ namespace ConsoleChess.Entities.Pieces
     public class King : Piece
     {
         public bool Moved{get; internal set;}
-        public King(Color color, Position currentPosition) : base(color, currentPosition){}
+        public bool Checked{get; internal set;}
+        public King(Color color, Position currentPosition) : base(color, currentPosition)
+        {
+            Moved = false;
+            Checked = false;
+        }
 
         public override List<Move> GetMoves(ChessMatch chessMatch)
         {
@@ -18,42 +23,82 @@ namespace ConsoleChess.Entities.Pieces
             try
             {
                 Position position = positions[line - 1, column - 1];
-                if(Movement.CheckMove(position, this)) possibleMoves.Add(new Move(CurrentPosition, position));
+                if(Movement.CheckMove(position, this))
+                {
+                    Move move = new Move(CurrentPosition, position);
+                    if(!VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
             }catch(IndexOutOfRangeException){}
             try
             {
                 Position position = positions[line - 1, column];
-                if(Movement.CheckMove(position, this)) possibleMoves.Add(new Move(CurrentPosition, position));
+                if(Movement.CheckMove(position, this))
+                {
+                    Move move = new Move(CurrentPosition, position);
+                    if(!VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
             }catch(IndexOutOfRangeException){}
             try
             {
                 Position position = positions[line - 1, column + 1];
-                if(Movement.CheckMove(position, this)) possibleMoves.Add(new Move(CurrentPosition, position));
+                if(Movement.CheckMove(position, this))
+                {
+                    Move move = new Move(CurrentPosition, position);
+                    if(!VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
             }catch(IndexOutOfRangeException){}
             try
             {
                 Position position = positions[line, column - 1];
-                if(Movement.CheckMove(position, this)) possibleMoves.Add(new Move(CurrentPosition, position));
+                if(Movement.CheckMove(position, this))
+                {
+                    Move move = new Move(CurrentPosition, position);
+                    if(!VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
             }catch(IndexOutOfRangeException){}
             try
             {
                 Position position = positions[line, column + 1];
-                if(Movement.CheckMove(position, this)) possibleMoves.Add(new Move(CurrentPosition, position));
+                if(Movement.CheckMove(position, this))
+                {
+                    Move move = new Move(CurrentPosition, position);
+                    if(!VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
             }catch(IndexOutOfRangeException){}
             try
             {
                 Position position = positions[line + 1, column - 1];
-                if(Movement.CheckMove(position, this)) possibleMoves.Add(new Move(CurrentPosition, position));
+                if(Movement.CheckMove(position, this))
+                {
+                    Move move = new Move(CurrentPosition, position);
+                    if(!VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
             }catch(IndexOutOfRangeException){}
             try
             {
                 Position position = positions[line + 1, column];
-                if(Movement.CheckMove(position, this)) possibleMoves.Add(new Move(CurrentPosition, position));
+                if(Movement.CheckMove(position, this))
+                {
+                    Move move = new Move(CurrentPosition, position);
+                    if(!VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
             }catch(IndexOutOfRangeException){}
             try
             {
                 Position position = positions[line + 1, column + 1];
-                if(Movement.CheckMove(position, this)) possibleMoves.Add(new Move(CurrentPosition, position));
+                if(Movement.CheckMove(position, this))
+                {
+                    Move move = new Move(CurrentPosition, position);
+                    if(!VerifyCheck(chessMatch, move))
+                        possibleMoves.Add(move);
+                }
             }catch(IndexOutOfRangeException){}
 
             // Castling (first check):
@@ -72,8 +117,12 @@ namespace ConsoleChess.Entities.Pieces
                             if(midPosition.Piece != null) failed = true;
                         }
                         if(!failed)
-                            possibleMoves.Add(new Move(CurrentPosition, positions[line, 1],
-                                castle: new Move(position, positions[line, 2])));
+                        {
+                            Move move = new Move(CurrentPosition, positions[line, 1],
+                                castle: new Move(position, positions[line, 2]));
+                            if(!VerifyCheck(chessMatch, move))
+                                possibleMoves.Add(move);
+                        }
                     }
                 }catch(IndexOutOfRangeException){}
                 // Castling right:
@@ -89,8 +138,12 @@ namespace ConsoleChess.Entities.Pieces
                             if(midPosition.Piece != null) failed = true;
                         }
                         if(!failed)
-                            possibleMoves.Add(new Move(CurrentPosition, positions[line, 6],
-                            castle: new Move(position, positions[line, 5])));
+                        {
+                            Move move = new Move(CurrentPosition, positions[line, 6],
+                                castle: new Move(position, positions[line, 5]));
+                            if(!VerifyCheck(chessMatch, move))
+                                possibleMoves.Add(move);
+                        }
                     }
                 }catch(IndexOutOfRangeException){}
             }
@@ -99,49 +152,73 @@ namespace ConsoleChess.Entities.Pieces
             return possibleMoves;
         }
 
-        public bool VerifyCheck(Board board)
+        public bool VerifyCheck(ChessMatch chessMatch, Move? possibleCheck = null)
         {
+            Board board = chessMatch.Board;
+
+            if(possibleCheck != null) possibleCheck.Execute();
+
             // Checking for knights:
             List<Move> moves = new List<Move>();
-            Movement.KnightMovement(moves, board, this);
+            Movement.KnightMovement(moves, chessMatch, this, true);
             foreach(var move in moves)
             {
                 Piece? finalPiece = move.FinalPosition.Piece;
                 if(finalPiece is Knight knight)
                 {
-                    if(knight.Color != Color) return true;
+                    if(knight.Color != Color)
+                    {
+                        if(possibleCheck != null) possibleCheck.Reverse();
+                        return true;
+                    }
                 }
             }
 
             // Checking for diagonal (queens and bishops):
             moves = new List<Move>();
-            Movement.DiagonalMovement(moves, board, this);
+            Movement.DiagonalMovement(moves, chessMatch, this, true);
             foreach(var move in moves)
             {
                 Piece? finalPiece = move.FinalPosition.Piece;
                 if(finalPiece is Bishop bishop)
                 {
-                    if(bishop.Color != Color) return true;
+                    if(bishop.Color != Color)
+                    {
+                        if(possibleCheck != null) possibleCheck.Reverse();
+                        return true;
+                    }
                 }
                 if(finalPiece is Queen queen)
                 {
-                    if(queen.Color != Color) return true;
+                    if(queen.Color != Color)
+                    {
+                        if(possibleCheck != null) possibleCheck.Reverse();
+                        return true;
+                    }
                 }
             }
 
             // Checking for horizontal (queens and rooks):
             moves = new List<Move>();
-            Movement.HorizontalMovement(moves, board, this);
+            Movement.HorizontalMovement(moves, chessMatch, this, true);
             foreach(var move in moves)
             {
                 Piece? finalPiece = move.FinalPosition.Piece;
                 if(finalPiece is Rook rook)
                 {
-                    if(rook.Color != Color) return true;
+                    if(rook.Color != Color)
+                    {
+                        if(possibleCheck != null) possibleCheck.Reverse();
+                        return true;
+                    }
                 }
                 if(finalPiece is Queen queen)
                 {
-                    if(queen.Color != Color) return true;
+                    if(queen.Color != Color)
+                    {
+                        if(possibleCheck != null) possibleCheck.Reverse();
+                        return true;
+                    }
                 }
             }
 
@@ -165,13 +242,23 @@ namespace ConsoleChess.Entities.Pieces
                 Piece? finalPiece = move.FinalPosition.Piece;
                 if(finalPiece is Pawn pawn)
                 {
-                    if(pawn.Color != Color) return true;
+                    if(pawn.Color != Color)
+                    {
+                        if(possibleCheck != null) possibleCheck.Reverse();
+                        return true;
+                    }
                 }
             }
 
+            if(possibleCheck != null) possibleCheck.Reverse();
             return false;
         }
 
+        public void VerifyCheckMate(Move checkingMove)
+        {
+            List<Position> positions = new List<Position>();
+        }
+        
         public override string ToString()
         {
             return "K";
