@@ -17,7 +17,7 @@ while(chessMatch.Running)
         chessMatch.Update();
 
         List<Move> possibleMoves = startPosition.Piece!.GetMoves(chessMatch);
-        board.SelectPositions(possibleMoves);
+        board.SelectPositions(startPosition, possibleMoves);
         chessMatch.Update();
 
         Console.Write("Select position: ");

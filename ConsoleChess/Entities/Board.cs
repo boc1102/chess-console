@@ -59,11 +59,11 @@ namespace ConsoleChess.Entities
             return Positions[line, column];
         }
     
-        public void SelectPositions(List<Move> possibleMoves)
+        public void SelectPositions(Position startPosition, List<Move> possibleMoves)
         {
+            startPosition.Selected = true;
             foreach(var move in possibleMoves)
             {
-                move.StartPosition.Selected = true;
                 move.FinalPosition.Selected = true;
             }
         }
